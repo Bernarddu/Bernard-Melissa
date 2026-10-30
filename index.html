@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Bernard & Melissa</title>
+<style>
+  :root{
+    --bg:#fff7f6; --card:#ffffff; --text:#4a3a3d; --muted:#a08a8e;
+    --accent:#e8808f; --accent-soft:#fde3e6; --line:#f3d3d7;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#221a1c; --card:#2d2326; --text:#f3e6e8; --muted:#b9a2a6; --accent:#f08a9a; --accent-soft:#3b2a2e; --line:#4a3439; }
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;line-height:1.7}
+  .wrap{max-width:720px;margin:0 auto;padding:0 16px 64px}
+  header{text-align:center;padding:56px 0 32px}
+  header .names{font-size:clamp(28px,7vw,40px);letter-spacing:.04em;font-weight:600}
+  header .names span{color:var(--accent)}
+  header .sub{color:var(--muted);margin-top:6px}
+  .counter{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:24px 16px;text-align:center;margin-top:24px}
+  .counter .label{color:var(--muted);font-size:14px}
+  .counter .days{font-size:clamp(44px,14vw,72px);font-weight:700;color:var(--accent);line-height:1.2}
+  .counter .detail{color:var(--muted);font-size:14px}
+  section{margin-top:48px}
+  h2{font-size:20px;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  h2::after{content:"";flex:1;height:1px;background:var(--line)}
+  .timeline{border-left:2px solid var(--line);margin-left:6px;padding-left:20px}
+  .t-item{position:relative;margin-bottom:22px}
+  .t-item::before{content:"";position:absolute;left:-27px;top:8px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:3px solid var(--bg)}
+  .t-date{font-size:13px;color:var(--muted)}
+  .t-title{font-weight:600}
+  .t-text{color:var(--muted);font-size:15px}
+  .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  @media(min-width:560px){.gallery{grid-template-columns:repeat(3,1fr)}}
+  .photo{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  .photo .img{aspect-ratio:1/1;background:linear-gradient(135deg,var(--accent-soft),var(--line));display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px}
+  .photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .photo .cap{padding:8px 10px;font-size:13px;color:var(--muted)}
+  .diary{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:12px}
+  .diary .d-date{font-size:13px;color:var(--muted)}
+  .diary .d-title{font-weight:600;margin:2px 0 4px}
+  ul.wish{list-style:none}
+  ul.wish li{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:8px;display:flex;gap:10px;align-items:center;cursor:pointer}
+  ul.wish li.done span{text-decoration:line-through;color:var(--muted)}
+  ul.wish input{accent-color:var(--accent);width:18px;height:18px}
+  footer{text-align:center;color:var(--muted);font-size:13px;margin-top:56px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="names">Bernard <span>&</span> Melissa</div>
+    <div class="sub" id="tagline"></div>
+    <div class="counter">
+      <div class="label">我们已经在一起</div>
+      <div class="days"><span id="days">0</span> 天</div>
+      <div class="detail" id="detail"></div>
+    </div>
+  </header>
+
+  <section>
+    <h2>我们的时间线</h2>
+    <div class="timeline" id="timeline"></div>
+  </section>
+
+  <section>
+    <h2>日常相册</h2>
+    <div class="gallery" id="gallery"></div>
+  </section>
+
+  <section>
+    <h2>小日记</h2>
+    <div id="diary"></div>
+  </section>
+
+  <section>
+    <h2>愿望清单</h2>
+    <ul class="wish" id="wish"></ul>
+  </section>
+
+  <footer>Made with love · <span id="year"></span></footer>
+</div>
+
+<script>
+/* ============ 在这里改内容就行 ============ */
+const CONFIG = {
+  startDate: "2024-01-01",          // 在一起的日期，格式 YYYY-MM-DD，请改成真实日期
+  tagline: "记录我们的日常",
+};
+
+const TIMELINE = [
+  { date: "2024-01-01", title: "在一起的那天", text: "写下这天发生了什么。" },
+  { date: "2024-05-20", title: "第一次一起旅行", text: "去了哪里，有什么难忘的事。" },
+  { date: "2025-01-01", title: "一周年", text: "一起吃了什么，说了什么。" },
+];
+
+// src 填图片路径，如 "photos/001.webp"；留空会显示占位色块
+const GALLERY = [
+  { src: "", caption: "周末的早午餐" },
+  { src: "", caption: "公园散步" },
+  { src: "", caption: "一起做饭" },
+  { src: "", caption: "下雨天" },
+  { src: "", caption: "小猫（或小狗）" },
+  { src: "", caption: "晚霞" },
+];
+
+const DIARY = [
+  { date: "2026-10-30", title: "今天开始做我们的小站", text: "第一篇日记，随便写点什么。" },
+];
+
+const WISHES = [
+  "一起去一次海边",
+  "一起看一场演唱会",
+  "一起养一只猫",
+  "一起去日本旅行",
+];
+/* ========================================== */
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+$("tagline").textContent = CONFIG.tagline;
+$("year").textContent = new Date().getFullYear();
+
+// 计时器
+(function(){
+  const start = new Date(CONFIG.startDate + "T00:00:00");
+  const now = new Date();
+  const days = Math.max(0, Math.floor((now - start) / 86400000));
+  $("days").textContent = days;
+  let y = now.getFullYear() - start.getFullYear();
+  let m = now.getMonth() - start.getMonth();
+  let d = now.getDate() - start.getDate();
+  if (d < 0) { m--; d += new Date(now.getFullYear(), now.getMonth(), 0).getDate(); }
+  if (m < 0) { y--; m += 12; }
+  $("detail").textContent = `${y} 年 ${m} 个月 ${d} 天`;
+})();
+
+$("timeline").innerHTML = TIMELINE.map(t =>
+  `<div class="t-item"><div class="t-date">${esc(t.date)}</div><div class="t-title">${esc(t.title)}</div><div class="t-text">${esc(t.text)}</div></div>`
+).join("");
+
+$("gallery").innerHTML = GALLERY.map(p =>
+  `<div class="photo"><div class="img">${p.src ? `<img src="${esc(p.src)}" alt="${esc(p.caption)}" loading="lazy">` : "照片待添加"}</div><div class="cap">${esc(p.caption)}</div></div>`
+).join("");
+
+$("diary").innerHTML = DIARY.map(e =>
+  `<div class="diary"><div class="d-date">${esc(e.date)}</div><div class="d-title">${esc(e.title)}</div><div>${esc(e.text)}</div></div>`
+).join("");
+
+// 愿望清单：勾选状态只保存在各自浏览器，两个人互不同步
+function loadDone(){ try { return JSON.parse(localStorage.getItem("wish-done") || "[]"); } catch(e){ return []; } }
+function saveDone(a){ try { localStorage.setItem("wish-done", JSON.stringify(a)); } catch(e){} }
+function renderWish(){
+  const done = loadDone();
+  $("wish").innerHTML = WISHES.map((w,i) =>
+    `<li class="${done.includes(i) ? "done" : ""}" data-i="${i}"><input type="checkbox" ${done.includes(i) ? "checked" : ""}><span>${esc(w)}</span></li>`
+  ).join("");
+}
+$("wish").addEventListener("click", e => {
+  const li = e.target.closest("li"); if (!li) return;
+  const i = Number(li.dataset.i);
+  let done = loadDone();
+  done = done.includes(i) ? done.filter(x => x !== i) : [...done, i];
+  saveDone(done); renderWish();
+});
+renderWish();
+</script>
+</body>
+</html>
